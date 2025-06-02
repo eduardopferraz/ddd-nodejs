@@ -23,6 +23,8 @@ describe('Get Question By Slug', () => {
             slug: 'example-question',
         })
 
+        console.log(newQuestion)
+
         expect(question.id).toBeTruthy()
         expect(question.title).toEqual(newQuestion.title)
     })

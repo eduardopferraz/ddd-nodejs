@@ -5,7 +5,7 @@
   "scripts": {
     "test": "vitest run",
     "lint": "eslint src --ext .ts",
-    "lint:fix":  "eslint src --ext .ts --fix"
+    "lint:fix": "eslint src --ext .ts --fix"
   },
   "type": "module",
   "keywords": [],
@@ -13,6 +13,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@faker-js/faker": "^9.8.0",
     "@types/node": "^22.15.23",
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
