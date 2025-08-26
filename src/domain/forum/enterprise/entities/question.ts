@@ -38,8 +38,8 @@ export class Question extends AggregateRoot<QuestionProps> {
         return this.props.slug
     }
 
-    get attachment() {
-        return this.props.attachment
+    get attachments() {
+        return this.props.attachments
     }
 
     get createdAt() {
