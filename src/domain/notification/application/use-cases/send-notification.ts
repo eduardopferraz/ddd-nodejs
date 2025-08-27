@@ -3,7 +3,6 @@ import { Notification } from "../../enterprise/entities/notification"
 import { UniqueEntityID } from "@/core/entities/unique-entity-id"
 import { NotificationsRepository } from "../repositories/notifications-repository"
 
-
 interface SendNotificationUseCaseRequest {
   recipientId: string
   title: string
@@ -11,7 +10,6 @@ interface SendNotificationUseCaseRequest {
 }
 
 type SendNotificationUseCaseResponse = Either<null, { notification: Notification }>
-
 
 export class SendNotificationUseCase {
   constructor(private notificationsRepository: NotificationsRepository) { }
