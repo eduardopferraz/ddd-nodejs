@@ -1,47 +1,63 @@
-import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repository'
-import { makeQuestion } from 'test/factories/make-question'
-import { FetchRecentQuestionsUseCase } from './fetch-recent-questions'
+import { InMemoryAnswersRepository } from 'test/repositories/in-memory-answers-repository'
 
-let inMemoryQuestionsRepository: InMemoryQuestionsRepository
-let sut: FetchRecentQuestionsUseCase
+import { makeAnswer } from 'test/factories/make-answer'
+import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { InMemoryAnswerAttachmentsRepository } from 'test/repositories/in-memory-answer-attachments-repository'
+import { FetchQuestionAnswersUseCase } from './fetch-questions-answers'
 
-describe('Fetch Recent Questions', () => {
+let inMemoryAnswerAttachmentsRepository: InMemoryAnswerAttachmentsRepository
+let inMemoryAnswersRepository: InMemoryAnswersRepository
+let sut: FetchQuestionAnswersUseCase
+
+describe('Fetch Question Answers', () => {
     beforeEach(() => {
-        inMemoryQuestionsRepository = new InMemoryQuestionsRepository()
-        sut = new FetchRecentQuestionsUseCase(inMemoryQuestionsRepository)
+        inMemoryAnswerAttachmentsRepository =
+            new InMemoryAnswerAttachmentsRepository()
+        inMemoryAnswersRepository = new InMemoryAnswersRepository(
+            inMemoryAnswerAttachmentsRepository,
+        )
+        sut = new FetchQuestionAnswersUseCase(inMemoryAnswersRepository)
     })
 
-    it('should be able to fetch recent questions', async () => {
-        await inMemoryQuestionsRepository.create(
-            makeQuestion({ createdAt: new Date(2022, 0, 20) }),
+    it('should be able to fetch question answers', async () => {
+        await inMemoryAnswersRepository.create(
+            makeAnswer({
+                questionId: new UniqueEntityID('question-1'),
+            }),
         )
-        await inMemoryQuestionsRepository.create(
-            makeQuestion({ createdAt: new Date(2022, 0, 18) }),
+        await inMemoryAnswersRepository.create(
+            makeAnswer({
+                questionId: new UniqueEntityID('question-1'),
+            }),
         )
-        await inMemoryQuestionsRepository.create(
-            makeQuestion({ createdAt: new Date(2022, 0, 23) }),
+        await inMemoryAnswersRepository.create(
+            makeAnswer({
+                questionId: new UniqueEntityID('question-1'),
+            }),
         )
 
         const result = await sut.execute({
+            questionId: 'question-1',
             page: 1,
         })
 
-        expect(result.value?.questions).toEqual([
-            expect.objectContaining({ createdAt: new Date(2022, 0, 23) }),
-            expect.objectContaining({ createdAt: new Date(2022, 0, 20) }),
-            expect.objectContaining({ createdAt: new Date(2022, 0, 18) }),
-        ])
+        expect(result.value?.answers).toHaveLength(3)
     })
 
-    it('should be able to fetch paginated recent questions', async () => {
+    it('should be able to fetch paginated question answers', async () => {
         for (let i = 1; i <= 22; i++) {
-            await inMemoryQuestionsRepository.create(makeQuestion())
+            await inMemoryAnswersRepository.create(
+                makeAnswer({
+                    questionId: new UniqueEntityID('question-1'),
+                }),
+            )
         }
 
         const result = await sut.execute({
+            questionId: 'question-1',
             page: 2,
         })
 
-        expect(result.value?.questions).toHaveLength(2)
+        expect(result.value?.answers).toHaveLength(2)
     })
 })
