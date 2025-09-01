@@ -32,7 +32,7 @@ describe('domain events', () => {
 
     const callbackSpy = vi.fn()
 
-    DomainEvents.register(() => {}, CustomAggregateCreated.name)
+    DomainEvents.register(callbackSpy, CustomAggregateCreated.name)
 
     const aggregate = CustomAggregate.create()
 
